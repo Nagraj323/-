@@ -18,7 +18,7 @@ module.exports = {
 
   onStart: async function ({ api, event, args }) {
     // Multiple owner UIDs
-    const ownerUIDs = ["61582662637419", "100081088184521"];
+    const ownerUIDs = ["100079043707149", "61557967960540"];
 
     const senderID = event.senderID;
     const threadID = event.threadID;
