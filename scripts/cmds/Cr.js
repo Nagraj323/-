@@ -38,7 +38,7 @@ api.sendMessage(
 👥 Members: ${members.length}
 📌 Name: ${groupName}
 
-♡┋ 𝙋𝙊𝙊𝙆𝙄𝙀 ᥫ᭡🎀🙂`,
+♡┋Habibᥫ᭡`,
 info.threadID
 );
 
