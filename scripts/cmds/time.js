@@ -19,16 +19,16 @@ module.exports.onStart = async function ({ api, event, args }) {
   try {
     // === Dhaka Time (GMT+6) ===
     const now = new Date();
-    const dhakaOffset = 6 * 60 * 60 * 1000;
-    const dhakaTime = new Date(now.getTime() + dhakaOffset);
+    const KolkataOffset = 6 * 60 * 60 * 1000;
+    const KolkataTime = new Date(now.getTime() + dhakaOffset);
 
-    const year = dhakaTime.getFullYear();
-    const month = dhakaTime.getMonth();
-    const date = dhakaTime.getDate();
-    const day = dhakaTime.getDay();
-    let hours = dhakaTime.getHours();
-    const minutes = dhakaTime.getMinutes();
-    const seconds = dhakaTime.getSeconds();
+    const year = KolkataTime.getFullYear();
+    const month = KolkataTime.getMonth();
+    const date = KolkataTime.getDate();
+    const day = KolkataTime.getDay();
+    let hours = KolkataTime.getHours();
+    const minutes = KolkataTime.getMinutes();
+    const seconds = KolkataTime.getSeconds();
 
     const ampm = hours >= 12 ? 'PM' : 'AM';
     hours = hours % 12;
