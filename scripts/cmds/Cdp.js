@@ -33,19 +33,19 @@ module.exports = {
                         total: "🎀 মোট কাপল ডিপি সংখ্যা: %1",
                         noData: "× কোনো ডিপি খুঁজে পাওয়া যায়নি!",
                         success: "🎀 | এই নাও তোমাদের ডিপি বেবি <😘",
-                        error: "× সমস্যা হয়েছে: %1। প্রয়োজনে Contact MahMUD।"
+                        error: "× সমস্যা হয়েছে: %1। প্রয়োজনে Contact Habib।"
                 },
                 en: {
                         total: "🎀 Total Couple DPs: %1",
                         noData: "× No Couple DP found.",
                         success: "🎀 | 𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐜𝐝𝐩 𝐛𝐚𝐛𝐲",
-                        error: "× API error: %1. Contact MahMUD for help."
+                        error: "× API error: %1. Contact Habib for help."
                 },
                 vi: {
                         total: "🎀 Tổng số ảnh đôi: %1",
                         noData: "× Không tìm thấy ảnh đôi nào.",
                         success: "🎀 | Ảnh đôi của các cưng đây <😘",
-                        error: "× Lỗi: %1. Liên hệ MahMUD để hỗ trợ."
+                        error: "× Lỗi: %1. Liên hệ Habib để hỗ trợ."
                 }
         },
 
