@@ -13,7 +13,7 @@ module.exports = {
   onStart: async function () {},
   onChat: async function ({ api, event }) {
       const msg = event.body?.toLowerCase();
-          if (!msg || msg !== "mamun") return;
+          if (!msg || msg !== "jamun") return;
     const profileText = 
     `⏤͟͟͞͞𝗠𝗔𝗠𝗨𝗡  𝗜𝗡𝗙𝗢 ☺︎
  ⏤͟͟͞͞☺︎ ┏━━━━━━━━━━━━━━━
