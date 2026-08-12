@@ -2,25 +2,28 @@ async function onStart() {
 	// —————————————— CHECK USE BOT —————————————— //
 	if (!body) return;
 
-	// ══════════ FULL NO PREFIX SYSTEM ══════════
-	let usedPrefix = "";
+	// ══════════ ADMIN NO PREFIX SYSTEM ══════════
+	const isAdminBot = (global.GoatBot.config.adminBot || []).includes(senderID);
+
+	let usedPrefix = prefix;
 	let bodyToParse = body;
 
 	if (body.startsWith(prefix)) {
-		// যদি কেউ প্রিফিক্স দিয়ে লেখে, তাও কাজ করবে
+		// সবাই প্রিফিক্স দিয়ে ব্যবহার করতে পারবে
 		bodyToParse = body;
 		usedPrefix = prefix;
-	} else {
-		// প্রিফিক্স ছাড়াই কমান্ড চলবে
+	} else if (isAdminBot) {
+		// শুধুমাত্র Bot Admin প্রিফিক্স ছাড়া ব্যবহার করতে পারবে
 		const possibleCmd = body.trim().split(/ +/)[0].toLowerCase();
-		const cmdExists = GoatBot.commands.has(possibleCmd) || 
-		                  GoatBot.commands.has(GoatBot.aliases.get(possibleCmd));
+		const cmdExists = GoatBot.commands.has(possibleCmd) || GoatBot.commands.has(GoatBot.aliases.get(possibleCmd));
 		
-		// যদি কমান্ড না থাকে তাহলে রিটার্ন (যাতে নরমাল চ্যাটে সমস্যা না হয়)
-		if (!cmdExists) return;
+		if (!cmdExists) return; // কমান্ড না থাকলে নরমাল মেসেজ হিসেবে যাবে
 		
 		usedPrefix = "";
 		bodyToParse = body;
+	} else {
+		// সাধারণ ইউজার প্রিফিক্স ছাড়া লিখলে কিছু হবে না
+		return;
 	}
 	// ═══════════════════════════════════════════
 
