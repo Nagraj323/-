@@ -1,74 +1,121 @@
 const axios = require("axios");
-const fs = require("fs");
-const { shortenURL } = global.utils;
-const baseApiUrl = async () => {
-  const base = await axios.get(
-    `https://raw.githubusercontent.com/cyber-ullash/cyber-ullash/refs/heads/main/UllashApi.json`,
-  );
-  return base.data.api;
-};
+const fs = require("fs-extra");
+const path = require("path");
+
+const API_BASE_URL = "https://noobs-api-sable.vercel.app/";
+
+async function alldown(url) {
+	try {
+		const response = await axios.get(`${API_BASE_URL}alldown`, { params: { url } });
+		return response.data;
+	} catch (e) {
+		console.error("[autodl] Alldown API error:", e);
+		return { status: false, msg: "Alldown API error" };
+	}
+}
 
 module.exports = {
-  config: {
-    name: "autodl",
-    version: "1.0.1",
-    author: "Dipto",
-    countDown: 0,
-    role: 0,
-    description: {
-      en: "Auto download video from tiktok, facebook, Instagram, YouTube, and more",
-    },
-    category: "media",
-    guide: {
-      en: "[video_link]",
-    },
-  },
-  onStart: async function () {},
-  onChat: async function ({ api, event }) {
-    let dipto = event.body ? event.body : "";
+	config: {
+		name: "autodl",
+		version: "2.1.2",
+		author: "rX Abdullah",
+		countDown: 2,
+		role: 0,
+		shortDescription: "Auto detect any link and download directly",
+		category: "utility",
+		guide: ""
+	},
 
-    try {
-      if (
-        dipto.startsWith("https://vt.tiktok.com") ||
-        dipto.startsWith("https://www.tiktok.com/") ||
-        dipto.startsWith("https://www.facebook.com") ||
-        dipto.startsWith("https://www.instagram.com/") ||
-        dipto.startsWith("https://youtu.be/") ||
-        dipto.startsWith("https://youtube.com/") ||
-        dipto.startsWith("https://x.com/") ||
-        dipto.startsWith("https://twitter.com/") ||
-        dipto.startsWith("https://vm.tiktok.com") ||
-        dipto.startsWith("https://fb.watch")
-      ) {
-        api.setMessageReaction("⏳", event.messageID, (err) => {}, true);
+	onStart: async function () {},
 
-        const path = __dirname + `/cache/diptoo.mp4`;
+	// -------------------------
+	// 🔥 Auto Detect Link and Download Directly
+	// -------------------------
+	onChat: async function ({ api, event }) {
+		let filePath = null;
+		let loadingInfo = null;
+		try {
+			const body = event.body ? event.body.trim() : "";
+			if (!body) return;
 
-        const { data } = await axios.get(
-          `${await baseApiUrl()}/alldl?url=${encodeURIComponent(dipto)}`,
-        );
-        const vid = (
-          await axios.get(data.result, { responseType: "arraybuffer" })
-        ).data;
+			// Robust regex supporting any subdomain prefix
+			const linkMatch = body.match(
+				/(https?:\/\/(?:[a-zA-Z0-9_-]+\.)*(?:youtube\.com|youtu\.be|tiktok\.com|instagram\.com|facebook\.com|fb\.watch)[^\s]*)/i
+			);
+			if (!linkMatch) return;
 
-        fs.writeFileSync(path, Buffer.from(vid, "utf-8"));
-        const url = await shortenURL(data.result);
-        api.setMessageReaction("✅", event.messageID, (err) => {}, true);
+			const content = linkMatch[1];
+			console.log("[autodl] link detected:", content);
 
-        api.sendMessage(
-          {
-            body: `${data.cp || null}\n✅ | Link: ${url || null}`,
+			// Detect Platform
+			let site = "Unknown";
+			if (content.includes("youtube.com") || content.includes("youtu.be")) site = "YouTube";
+			else if (content.includes("tiktok.com")) site = "TikTok";
+			else if (content.includes("instagram.com")) site = "Instagram";
+			else if (content.includes("facebook.com") || content.includes("fb.watch")) site = "Facebook";
 
-            attachment: fs.createReadStream(path),
-          },
-          event.threadID,
-          () => fs.unlinkSync(path),
-          event.messageID,
-        );
-      }
-    } catch (e) {
-      api.setMessageReaction("❎", event.messageID, (err) => {}, true);
-      api.sendMessage(e, event.threadID, event.messageID);
-    }
-  },
+			// Show downloading state immediately
+			loadingInfo = await api.sendMessage(`⬇️ Auto downloading from ${site}...`, event.threadID);
+
+			// Download using direct API call
+			const data = await alldown(content);
+			if (!data || data.status === false || !data.url) {
+				if (loadingInfo && loadingInfo.messageID) {
+					api.unsendMessage(loadingInfo.messageID);
+				}
+				return api.sendMessage(`❌ Failed to fetch download link for ${site}!`, event.threadID);
+			}
+
+			// Support data.t and data.title
+			const title = data.t || data.title || "video";
+			const dlUrl = data.url;
+
+			// Download buffer
+			const bufferResponse = await axios.get(dlUrl, { responseType: "arraybuffer" });
+			const buffer = bufferResponse.data;
+			const safeTitle = title.replace(/[^\w\s]/gi, "_");
+
+			const cacheDir = path.join(__dirname, "cache");
+			fs.ensureDirSync(cacheDir);
+			filePath = path.join(cacheDir, `${safeTitle}_${Date.now()}.mp4`);
+			fs.writeFileSync(filePath, buffer);
+
+			// Send downloaded file
+			api.sendMessage(
+				{
+					body: `🎀 Download Complete!\n📍 Platform: ${site}\n🎬 Title: ${title}`,
+					attachment: fs.createReadStream(filePath)
+				},
+				event.threadID,
+				(err) => {
+					// Always cleanup file when done sending
+					try {
+						if (filePath && fs.existsSync(filePath)) {
+							fs.unlinkSync(filePath);
+						}
+					} catch (cleanupErr) {
+						console.error("[autodl] Cleanup error in callback:", cleanupErr);
+					}
+					// Remove the "Downloading" message
+					if (loadingInfo && loadingInfo.messageID) {
+						api.unsendMessage(loadingInfo.messageID);
+					}
+				}
+			);
+
+		} catch (e) {
+			console.log("[autodl] direct download error:", e);
+			try {
+				if (filePath && fs.existsSync(filePath)) {
+					fs.unlinkSync(filePath);
+				}
+			} catch (cleanupErr) {
+				console.error("[autodl] Cleanup error in catch:", cleanupErr);
+			}
+			if (loadingInfo && loadingInfo.messageID) {
+				api.unsendMessage(loadingInfo.messageID);
+			}
+			api.sendMessage("❌ Download failed!", event.threadID);
+		}
+	}
 };
