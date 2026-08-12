@@ -34,7 +34,7 @@ module.exports = {
     const senderID = event.senderID;
     const senderName = await usersData.getName(senderID) || "Unknown User";
 
-    const now = moment().tz("Asia/Dhaka");
+    const now = moment().tz("Asia/Kolkata");
     const timeString = now.format("hh:mm A");
     const dateString = now.format("DD/MM/YYYY");
 
@@ -60,8 +60,8 @@ module.exports = {
     }
 
     
-    const owner = "×᷼×ＭＡ☂Ｍ☂ＵＮ☆"; 
-    const fb = "MA M UN Bb'z";
+    const owner = "♡┋Habibᥫ᭡"; 
+    const fb = "♡┋Habibᥫ᭡";
 
     
     const formSend = {
