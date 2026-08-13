@@ -12,8 +12,12 @@
   "antiInbox": false,
   "language": "en",
   "notesLanguage": "change language using ISO 639-1 code",
-  "nickNameBot": "♡┋Habibᥫ᭡",
+  "nickNameBot": ""—͞  Habib ᥫ᭡",
   "prefix": ".",
+  "noPrefix": {
+  "enable": true,
+  "notes": "true = only bot admins can use commands without prefix | false = everyone must use prefix"
+ },
   "adminOnly": {
     "enable": false,
     "ignoreCommand": []
