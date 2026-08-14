@@ -1,6 +1,6 @@
 <p align="center">
   <!-- Banner Section -->
-  <img src="YOUR_BANNER_IMAGE_URL_HERE" width="100%" alt="Header Banner"/>
+  <img src="https://i.imgur.com/Tn1O0s3.jpeg" width="100%" alt="Header Banner"/>
 </p>
 
 <h1 align="center">
