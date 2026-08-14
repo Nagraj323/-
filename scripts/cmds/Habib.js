@@ -1,4 +1,4 @@
- module.exports = {
+module.exports = {
   config: {
     name: "habib",
     version: "2.0.0",
@@ -11,14 +11,12 @@
     guide: "Mention users or type habib to trigger detectors"
   },
 
-  habibCount: 0,
-
   onStart: async function ({ message }) {
     try {
       const info = await message.reply(
         "✅ **All Detectors Active!**\n\n" +
         "• habib / habib vai / habib bhai / habib bro\n" +
-        "• @KB Aashik\n" +
+        "•  2 nd name \n" +
         "• 100042200207408\n" +
         "• 61591040218593\n" +
         "• 100079043707149\n\n" +
@@ -57,11 +55,10 @@
       const text = event.body.toLowerCase().trim();
       const mentions = event.mentions || {};
 
-      // Helper: check if a target UID is referenced via FB mention, raw UID in text, or aliases
-      const isTargetHit = (uid, aliases = []) => {
+      // Helper: only UID (mention or raw UID in text) — no name aliases
+      const isTargetHit = (uid) => {
         if (mentions[uid]) return true;
         if (event.body.includes(uid)) return true;
-        if (aliases.some(alias => text.includes(alias))) return true;
         return false;
       };
 
@@ -77,15 +74,15 @@
         }
       };
 
-      // ---- 1. KB Aashik Detector (UID + mention + name) ----
+      // ---- 1. KB Aashik Detector (UID only) ----
       const aashikUID = "61591040218593";
-      if (isTargetHit(aashikUID, ["Masum", "Masum bhaiya"])) {
+      if (isTargetHit(aashikUID)) {
         markHandled();
         await message.reply("uni akon besto ache 🙂");
         return;
       }
 
-      // ---- 2. Target UID 100042200207408 ----
+      // ---- 2. Target UID 61592654789914 ----
       const targetID1 = "61592654789914";
       if (isTargetHit(targetID1)) {
         markHandled();
@@ -93,7 +90,7 @@
         return;
       }
 
-      // ---- 3. Target UID 100079043707149 (fixed: was checking targetID1) ----
+      // ---- 3. Target UID 100079043707149 ----
       const targetID2 = "100079043707149";
       if (isTargetHit(targetID2)) {
         markHandled();
@@ -105,7 +102,6 @@
       const habibTriggers = ["habib", "হাবিব", "habib vai", "habib bhai", "habib bro"];
       if (habibTriggers.some(trigger => text.includes(trigger))) {
         markHandled();
-        this.habibCount = (this.habibCount || 0) + 1;
 
         const replies = [
           "bos akon besto ache 😌",
@@ -116,7 +112,7 @@
         ];
 
         const randomReply = replies[Math.floor(Math.random() * replies.length)];
-        await message.reply(`${randomReply}\n\n(Count: ${this.habibCount})`);
+        await message.reply(randomReply);
         return;
       }
     } catch (err) {
