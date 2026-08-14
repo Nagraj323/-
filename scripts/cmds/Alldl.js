@@ -1,101 +1,128 @@
-const axios = require("axios");
-const fs = require("fs-extra");
+const fs = require("fs");
 const path = require("path");
+const { downloadVideo } = require("sagor-video-downloader");
 
-const baseApiUrl = async () => {
-        const base = await axios.get("https://raw.githubusercontent.com/mahmudx7/HINATA/main/baseApiUrl.json");
-        return base.data.mahmud;
-};
+const CACHE_DIR = path.join(__dirname, "cache");
+
+if (!fs.existsSync(CACHE_DIR)) {
+	fs.mkdirSync(CACHE_DIR, { recursive: true });
+}
+
+// Currently processing messages (prevents double send)
+const processing = new Set();
+
+const VIDEO_LINK_REGEX = /(https?:\/\/(?:www\.|m\.)?(?:facebook\.com|fb\.watch|fb\.com|tiktok\.com|vt\.tiktok\.com|vm\.tiktok\.com|instagram\.com|instagr\.am|threads\.net|twitter\.com|x\.com|t\.co|youtube\.com|youtu\.be|pinterest\.com|pin\.it|likee\.video|capcut\.com)[^\s]*)/gi;
 
 module.exports = {
-        config: {
-                name: "alldl",
-                aliases: ["download"],
-                version: "1.7",
-                author: "MahMUD",
-                countDown: 10,
-                role: 0,
-                description: {
-                        bn: "যেকোনো সোশ্যাল মিডিয়া ভিডিও ডাউনলোড করুন (FB, TT, YT, IG)",
-                        en: "Download videos from any social media (FB, TT, YT, IG)",
-                        vi: "Tải xuống video từ bất kỳ phương tiện truyền thông xã hội nào"
-                },
-                category: "media",
-                guide: {
-                        bn: '   {pn} <লিঙ্ক>: ভিডিও লিঙ্ক দিন'
-                                + '\n   অথবা ভিডিও লিঙ্কের রিপ্লাই দিয়ে ব্যবহার করুন',
-                        en: '   {pn} <link>: Provide the video link'
-                                + '\n   Or reply to a video link',
-                        vi: '   {pn} <liên kết>: Cung cấp liên kết video'
-                                + '\n   Hoặc phản hồi một liên kết video'
-                }
-        },
+	config: {
+		name: "autodl",
+		aliases: ["adl", "autodown"],
+		version: "1.2.0",
+		author: "Sk Habibulla",
+		countDown: 5,
+		role: 0,
+		shortDescription: {
+			en: "Auto download video when link is pasted"
+		},
+		description: {
+			en: "Automatically downloads Facebook, TikTok, Instagram videos when someone pastes a link (no command needed)"
+		},
+		category: "media",
+		guide: {
+			en: "Just paste any supported video link in the chat\nOr use: {pn} <link>"
+		}
+	},
 
-        langs: {
-                bn: {
-                        noLink: "× বেবি, একটি সঠিক ভিডিও লিঙ্ক দাও অথবা লিঙ্কে রিপ্লাই দাও! 🔗",
-                        success: "𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐝𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐯𝐢𝐝𝐞𝐨 𝐛𝐚𝐛𝐲 <😘",
-                        error: "× ডাউনলোড করতে সমস্যা হয়েছে: %1। প্রয়োজনে Contact Habib।"
-                },
-                en: {
-                        noLink: "× Baby, please provide a valid video link or reply to one! 🔗",
-                        success: "𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐝𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐯𝐢𝐝𝐞𝐨 𝐛𝐚𝐛𝐲 <😘",
-                        error: "× Failed to download: %1. Contact Habib for help."
-                },
-                vi: {
-                        noLink: "× Cưng ơi, vui lòng cung cấp liên kết video hợp lệ! 🔗",
-                        success: "𝐇𝐞𝐫𝐞'𝐬 𝐲𝐨𝐮𝐫 𝐝𝐨𝐰𝐧𝐥𝐨𝐚𝐝 𝐯𝐢𝐝𝐞𝐨 𝐛𝐚𝐛𝐲 <😘",
-                        error: "× Lỗi tải xuống: %1. Liên hệ Habib để hỗ trợ."
-                }
-        },
+	onStart: async function ({ api, args, message, event }) {
+		const url = args.join(" ").trim();
+		if (!url) {
+			return message.reply("📥 শুধু ভিডিও লিংক পেস্ট করো, অটো ডাউনলোড হয়ে যাবে!\n\nঅথবা: autodl <link>");
+		}
+		await handleDownload({ api, message, event, url, isAuto: false });
+	},
 
-        onStart: async function ({ api, event, args, message, getLang }) {
-                const authorName = String.fromCharCode(77, 97, 104, 77, 85, 68);
-                if (this.config.author !== authorName) {
-                        return api.sendMessage("You are not authorized to change the author name.", event.threadID, event.messageID);
-                }
+	onChat: async function ({ api, message, event }) {
+		// Ignore bot's own messages
+		if (event.senderID == api.getCurrentUserID()) return;
 
-                const link = args[0] || event.messageReply?.body;
-                if (!link || !link.startsWith("http")) return message.reply(getLang("noLink"));
+		const body = event.body || "";
+		if (!body || body.length < 10) return;
 
-                const cacheDir = path.join(__dirname, "cache");
-                const filePath = path.join(cacheDir, `alldl_${Date.now()}.mp4`);
+		const matches = body.match(VIDEO_LINK_REGEX);
+		if (!matches || matches.length === 0) return;
 
-                try {
-                        api.setMessageReaction("⏳", event.messageID, () => {}, true);
-                        if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
+		const url = matches[0].trim();
 
-                        const base = await baseApiUrl();
-                        const apiUrl = `${base}/api/download/video?link=${encodeURIComponent(link)}`;
-                        
-                        const response = await axios({
-                                method: 'get',
-                                url: apiUrl,
-                                responseType: 'arraybuffer',
-                                headers: {
-                                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
-                                }
-                        });
+		// Prevent double processing of the same message
+		const lockKey = event.messageID || `\( {event.threadID}_ \){url}`;
+		if (processing.has(lockKey)) return;
+		processing.add(lockKey);
 
-                        fs.writeFileSync(filePath, Buffer.from(response.data));
+		// Auto remove lock after 60 seconds (safety)
+		setTimeout(() => processing.delete(lockKey), 60000);
 
-                        const stats = fs.statSync(filePath);
-                        if (stats.size < 100) throw new Error("Invalid video file received.");
+		await new Promise(r => setTimeout(r, 600));
 
-                        api.setMessageReaction("✅", event.messageID, () => {}, true);
-
-                        return message.reply({
-                                body: getLang("success"),
-                                attachment: fs.createReadStream(filePath)
-                        }, () => {
-                                if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-                        });
-
-                } catch (err) {
-                        console.error("AllDL Error:", err);
-                        api.setMessageReaction("❎", event.messageID, () => {}, true);
-                        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-                        return message.reply(getLang("error", err.message));
-                }
-        }
+		await handleDownload({ api, message, event, url, isAuto: true, lockKey });
+	}
 };
+
+async function handleDownload({ api, message, event, url, isAuto = false, lockKey = null }) {
+	let waitingMsg;
+
+	try {
+		waitingMsg = await message.reply(
+			isAuto
+				? "🔗 লিংক ডিটেক্ট হয়েছে!\n⏳ ভিডিও ডাউনলোড হচ্ছে..."
+				: "⏳ ভিডিও ডাউনলোড হচ্ছে..."
+		);
+	} catch (_) {}
+
+	const fileName = `autodl_${Date.now()}.mp4`;
+	const filePath = path.join(CACHE_DIR, fileName);
+
+	try {
+		const result = await downloadVideo(url, filePath);
+
+		const title = result.title || "Video";
+		const finalPath = result.filePath || filePath;
+
+		if (!fs.existsSync(finalPath)) {
+			throw new Error("ফাইল তৈরি হয়নি");
+		}
+
+		const stats = fs.statSync(finalPath);
+		if (stats.size < 1024) {
+			fs.unlinkSync(finalPath);
+			throw new Error("ফাইল খুব ছোট — ডাউনলোড ফেইল হয়েছে");
+		}
+
+		await message.reply({
+			body: `🎬 𝗧𝗶𝘁𝗹𝗲: ${title}\n\n✅ Owner: Sk Habibulla`,
+			attachment: fs.createReadStream(finalPath)
+		});
+
+		// Cleanup
+		setTimeout(() => {
+			try {
+				if (fs.existsSync(finalPath)) fs.unlinkSync(finalPath);
+			} catch (_) {}
+		}, 20000);
+
+	} catch (err) {
+		console.error("[autodl] Error:", err.message);
+
+		if (!isAuto) {
+			await message.reply(`❌ ডাউনলোড করতে পারিনি:\n${err.message}`);
+		}
+	} finally {
+		// Unlock
+		if (lockKey) processing.delete(lockKey);
+
+		if (waitingMsg && waitingMsg.messageID) {
+			try {
+				await api.unsendMessage(waitingMsg.messageID);
+			} catch (_) {}
+		}
+	}
+                        }
