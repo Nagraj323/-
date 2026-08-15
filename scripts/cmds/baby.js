@@ -1,6 +1,6 @@
 const axios = require('axios');
 const baseApiUrl = async () => {
-    return "https://noobs-api.top/dipto";
+    return "https://simsimi-xdi.onrender.com";
 };
 
 module.exports.config = {
