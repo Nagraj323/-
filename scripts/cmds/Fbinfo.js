@@ -69,7 +69,7 @@ module.exports = {
 🔗 Profile:
 https://facebook.com/${uid}
 
-╰─✦ 𝗛𝗔𝗕𝗜𝗕 𝗖𝗛𝗔𝗧 𝗕𝗢𝗧 ✦─╯
+╰─✦ 𝐚𝐫𝐢𝐲𝐚𝐧 𝐜𝐡𝐚𝐭 𝐛𝐨𝐭 ✦─╯
 `;
 
       return message.reply(msg);
