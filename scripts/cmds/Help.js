@@ -6,7 +6,7 @@ const axios = require("axios");
 
 const cacheDir = path.join(__dirname, "cache");
 const imagePath = path.join(cacheDir, "help_avatar.jpg");
-const TARGET_UID = "100079043707149";
+const TARGET_UID = "100028959431665";
 
 // Cache folder তৈরি
 if (!fs.existsSync(cacheDir)) {
