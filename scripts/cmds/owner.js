@@ -50,7 +50,7 @@ module.exports = {
 
 		const now = new Date();
 		const time = now.toLocaleString("en-BD", {
-			timeZone: "Asia/Kolkata",
+			timeZone: "Asia/Dhaka",
 			hour: "2-digit",
 			minute: "2-digit",
 			second: "2-digit",
