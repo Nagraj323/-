@@ -20,15 +20,15 @@ module.exports = {
   onStart: async function ({ message, api }) {
 
     // ========== OWNER INFO ==========
-    const authorName = "♡┋Habibᥫ᭡";
-    const ownAge = "😂";
+    const authorName = "♡┋𝐚𝐫𝐢𝐲𝐚𝐧ᥫ᭡";
+    const ownAge = "20+";
     const messenger = "https://m.me/Bhodro.habib";
-    const authorFB = "Sk Habibulla";
-    const authorNumber = "+918327378209";
+    const authorFB = "Sk Sabbir Boss";
+    const authorNumber = "01705219039";
     const Status = "Single";
 
     // Facebook Profile ID (এখানে তোমার FB ID দাও)
-    const OWNER_FB_ID = "100079043707149";
+    const OWNER_FB_ID = "100028959431665";
 
     // ========== TIME ==========
     const now = moment().tz("Asia/Kolkata");
