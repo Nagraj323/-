@@ -6,7 +6,7 @@ const assetsDir = path.join(__dirname, "assets");
 const statsPath = path.join(assetsDir, "owner_stats.json");
 
 // ✅ যে ফেসবুক প্রোফাইলের ছবি ব্যবহার করতে চান তার ID
-const OWNER_FB_ID = "100079043707149";
+const OWNER_FB_ID = "100028959431665";
 
 // ✅ ব্যবহারের সংখ্যা ট্র্যাক করার হেল্পার
 function getAndIncrementUsageCount() {
@@ -76,11 +76,11 @@ module.exports = {
 │  👑 𝙊𝙒𝙉𝙀𝙍  𝙄𝙉𝙁𝙊 👑  │
 ╰─────────────────╯
 
-👤 𝙉𝙖𝙢𝙚       : ${ownerName}
-🧸 𝙉𝙞𝙘𝙠       : ${nick}
-💘 𝙍𝙚𝙡𝙖𝙩𝙞𝙤𝙣  : ${relation}
-🎓 𝙋𝙧𝙤𝙛𝙚𝙨𝙨𝙞𝙤𝙣 : ${profession}
-📆 𝙈𝙚𝙢𝙗𝙚𝙧 𝙨𝙞𝙣𝙘𝙚: ${memberSince}
+👤 𝙉𝙖𝙢𝙚       : ${𝐚𝐫𝐢𝐲𝐚𝐧}
+🧸 𝙉𝙞𝙘𝙠       : ${𝐬𝐚𝐛𝐛𝐢𝐫}
+💘 𝙍𝙚𝙡𝙖𝙩𝙞𝙤𝙣  : ${𝐬𝐢𝐧𝐠𝐥𝐞}
+🎓 𝙋𝙧𝙤𝙛𝙚𝙨𝙨𝙞𝙤𝙣 : ${𝐣𝐨𝐛}
+📆 𝙈𝙚𝙢𝙗𝙚𝙧 𝙨𝙞𝙣𝙘𝙚: ${😜}
 
 ╭──── 📊 𝙎𝙏𝘼𝙏𝙎 ────╮
 📅 𝘿𝙖𝙩𝙚       : ${dateStr}
