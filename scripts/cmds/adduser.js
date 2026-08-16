@@ -186,7 +186,7 @@ module.exports = {
 				""
 			)}`;
 
-		msg += `\n━━━━━━━━━━━━━━\n👑 Admin: 𝗠𝗔𝗠𝗨𝗡`;
+		msg += `\n━━━━━━━━━━━━━━\n👑 Admin: ♡┋Habibᥫ᭡`;
 
 		await message.reply(msg);
 	}
