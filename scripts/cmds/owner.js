@@ -38,8 +38,8 @@ module.exports = {
 	},
 
 	onStart: async function ({ message, event, api }) {
-		const ownerName = "Sk Habib";
-		const nick = "♡┋Habib᭡";
+		const ownerName = "Ariyan";
+		const nick = "♡┋Sabbir";
 		const relation = "Single";
 		const profession = "Gorib";
 		const memberSince = "2023";
@@ -76,11 +76,15 @@ module.exports = {
 │  👑 𝙊𝙒𝙉𝙀𝙍  𝙄𝙉𝙁𝙊 👑  │
 ╰─────────────────╯
 
-👤 𝙉𝙖𝙢𝙚       : ${𝐚𝐫𝐢𝐲𝐚𝐧}
-🧸 𝙉𝙞𝙘𝙠       : ${𝐬𝐚𝐛𝐛𝐢𝐫}
-💘 𝙍𝙚𝙡𝙖𝙩𝙞𝙤𝙣  : ${𝐬𝐢𝐧𝐠𝐥𝐞}
-🎓 𝙋𝙧𝙤𝙛𝙚𝙨𝙨𝙞𝙤𝙣 : ${𝐣𝐨𝐛}
-📆 𝙈𝙚𝙢𝙗𝙚𝙧 𝙨𝙞𝙣𝙘𝙚: ${😜}
+👤 𝙉𝙖𝙢𝙚       : ${ownerName}
+🧸 𝙉𝙞𝙘𝙠       : ${nick}
+💘 𝙍𝙚𝙡𝙖𝙩𝙞𝙤𝙣  : ${relation}
+🎓 𝙋𝙧𝙤𝙛𝙚𝙨𝙨𝙞𝙤𝙣 : ${profession}
+📆 𝙈𝙚𝙢𝙗𝙚𝙧 𝙨𝙞𝙣𝙘𝙚: ${memberSince}
+
+
+
+
 
 ╭──── 📊 𝙎𝙏𝘼𝙏𝙎 ────╮
 📅 𝘿𝙖𝙩𝙚       : ${dateStr}
