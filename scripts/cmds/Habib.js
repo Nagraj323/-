@@ -17,9 +17,9 @@ module.exports = {
         "✅ **All Detectors Active!**\n\n" +
         "• habib / habib vai / habib bhai / habib bro\n" +
         "•  2 nd name \n" +
-        "• 100042200207408\n" +
-        "• 61591040218593\n" +
-        "• 100079043707149\n\n" +
+        "• \n" +
+        "• 61591654275272\n" +
+        "• 100028959431665\n\n" +
         "Bot ready 🔥"
       );
 
