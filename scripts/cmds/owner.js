@@ -64,8 +64,8 @@ module.exports = {
 		});
 
 		const footers = [
-			"✦ Powered by Habib Bot ✦",
-			"✦ Made with ❤️ by Sk Habib ✦",
+			"✦ Powered by Ariyan Bot ✦",
+			"✦ Made with ❤️ by Sk Sabbir ✦",
 			"✦ Owner is always watching ✦",
 			"✦ Respect the Owner ✦"
 		];
