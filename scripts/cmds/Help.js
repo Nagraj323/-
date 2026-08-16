@@ -102,8 +102,8 @@ module.exports = {
 			msg += `│ 📦 Total Commands : ${totalCommands}\n`;
 			msg += `│ 💡 ${helpHint}\n`;
 			msg += `└──────────────────┘\n`;
-			msg += `\n✦ ADMIN: ♡┋Habibᥫ᭡\n`;
-			msg += `✦ WHATSAPP: +918327378209`;
+			msg += `\n✦ ADMIN: ♡┋𝐚𝐫𝐢𝐲𝐚𝐧\n`;
+			msg += `✦ WHATSAPP: 01937278213`;
 
 			try {
 				const hh = await message.reply({
